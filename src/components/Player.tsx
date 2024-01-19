@@ -8,12 +8,8 @@ import '../styles/player.css'
 export default function Player() {
     const ytRef = useRef<YouTube | null>(null)
     const [paused, setPaused] = useState<boolean>(true)
-    const { setListVideos, next, prev, listVideos, activeVideo } = useContext(PlayerContext)
+    const { next, prev, listVideos, activeVideo } = useContext(PlayerContext)
     const [volume, setVolume] = useState<number>(100)
-    useEffect(() => {
-        setListVideos(['dzNvk80XY9s'])
-        
-    }, [activeVideo])
 
     useEffect(() => {
         if(ytRef.current){
@@ -35,12 +31,12 @@ export default function Player() {
             <ContainerVideo>
             {
                 listVideos.length && <YouTube
-                    videoId={listVideos[activeVideo]}
+                    videoId={listVideos[activeVideo].videoId}
                     iframeClassName="iframe"
                     ref={ytRef}
                     onPause={() => setPaused(true)}
                     onPlay={() => setPaused(false)}
-                    onReady={(e) => setPaused(true)}  
+                    onReady={() => setPaused(true)}  
                 />
             }
             </ContainerVideo>
@@ -61,7 +57,7 @@ export default function Player() {
 
 const ContainerControls = styled.div`
     display: flex;
-    gap: 20px;
+    gap: ${props => props.theme.gap['gap-4']};
     box-sizing: border-box;
     svg {
         font-size: 34px;
@@ -98,9 +94,9 @@ const ContainerVolume = styled.div`
 
 const ContainerPlayer = styled.div`
     position: fixed;
-    padding: 12px;
+    padding: ${props => props.theme.padding['p-3']};
     width: 100%;
-    background-color: black;
+    background-color: ${props => props.theme.colors['black']};
     bottom: 0;
     left: 0;
     height: 90px;

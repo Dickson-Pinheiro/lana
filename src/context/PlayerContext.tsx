@@ -1,11 +1,13 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { Music } from "../types/music";
 
 interface PlayerContextProps {
-    listVideos: string[]
-    setListVideos: Dispatch<SetStateAction<string[]>>,
+    listVideos: Music[]
+    setListVideos: Dispatch<SetStateAction<Music[]>>,
     next: () => void,
     prev: () => void,
     activeVideo: number,
+    playPerId: (videoId: string) => void
 }
 
 interface PlayerContextProviderProps {
@@ -18,10 +20,11 @@ export const PlayerContext = createContext<PlayerContextProps>({
     next: () => { },
     prev: () => { },
     activeVideo: 0,
+    playPerId: () => {}
 })
 
 export function PlayerContextProvider({ children }: PlayerContextProviderProps) {
-    const [listVideos, setListVideos] = useState<string[]>([])
+    const [listVideos, setListVideos] = useState<Music[]>([])
     const [activeVideo, setActiveVideo] = useState<number>(0)
 
     const next = () => {
@@ -38,6 +41,10 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
         }
     }
 
+    function playPerId(videoId: string){
+        const position = listVideos.findIndex(e => e.videoId === videoId)
+        setActiveVideo(position);
+    }
 
     return (
         <PlayerContext.Provider value={{
@@ -46,6 +53,7 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
             next,
             prev,
             activeVideo,
+            playPerId
         }}>
             {children}
         </PlayerContext.Provider>

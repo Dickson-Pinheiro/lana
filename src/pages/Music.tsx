@@ -2,12 +2,13 @@ import styled from "styled-components"
 import Player from "../components/Player"
 import saturnFolder from '../assets/saturn.jpeg';
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
+import { Link } from "react-router-dom";
 
 export default function Music(){
     return(
         <ContainerMusic>
             <ContainerBackButton>
-                <TbSquareRoundedChevronLeft color="#c7c7c7" />
+                <Link to='/home'><TbSquareRoundedChevronLeft color="#c7c7c7" /></Link>
             </ContainerBackButton>
             <ContainerMusicData>
                 <img src={saturnFolder} />
