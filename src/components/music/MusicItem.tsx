@@ -1,8 +1,7 @@
 import styled from "styled-components"
-import { PiPlayCircleFill, PiPauseCircleFill } from "react-icons/pi";
-import { useTheme } from 'styled-components'
 import { useContext } from "react";
-import { PlayerContext } from "../../context/PlayerContext";
+import { EPlayerActionsType, PlayerContext } from "../../context/PlayerContext";
+import PlayerIcon from "./PlayerIcon";
 
 interface MusicItemProps {
     name: string,
@@ -11,21 +10,33 @@ interface MusicItemProps {
 }
 
 export default function MusicItem({ name, artist, videoId }: MusicItemProps){
-    const theme = useTheme()
-    const { playPerId, activeVideo, listVideos } = useContext(PlayerContext)
+    const { playPerId, activeVideo, listVideos, defineActionPlayer, activeVideoData } = useContext(PlayerContext)
+
+    function onClickMusicItem(){
+        playPerId(videoId)
+        if(activeVideoData?.videoId === videoId){
+            return
+        }
+        
+        defineActionPlayer(EPlayerActionsType.PLAY)
+    }
 
     return(
-        <ContainerMusicIem>
-            { listVideos[activeVideo]?.videoId === videoId ? <PiPauseCircleFill color={theme.colors['yellow1']} size={36}/> : <PiPlayCircleFill color={theme.colors['yellow1']} size={36} onClick={()=> playPerId(videoId)}/>} 
+        <ContainerMusicItem active={listVideos[activeVideo]?.videoId === videoId } onClick={onClickMusicItem}>
+            <PlayerIcon videoId={videoId}/>
             <InfoContainer>
                 <p>{name}</p>
                 <span>{artist}</span>
             </InfoContainer>
-        </ContainerMusicIem>
+        </ContainerMusicItem>
     )
 }
 
-const ContainerMusicIem = styled.div`
+interface ContainerMusicProps {
+    active: boolean
+}
+
+const ContainerMusicItem = styled.div<ContainerMusicProps>`
     display: flex;
     align-items: center;
     gap: ${props => props.theme.gap['gap-3']};
@@ -33,7 +44,7 @@ const ContainerMusicIem = styled.div`
     padding: 8px;
     background-color: ${props => props.theme.colors['gray3']};
     border-radius: 8px;
-    border-bottom: 1px solid transparent;
+    border: 1px solid ${props => props.active ? props.theme.colors['yellow1'] : "transparent"};
     cursor: pointer;
     transition: 200ms;
     box-sizing: border-box;
