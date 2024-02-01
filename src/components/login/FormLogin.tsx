@@ -1,25 +1,49 @@
-import { FormEvent, useState } from "react"
-import styled from "styled-components"
+import { FormEvent, useContext, useEffect, useState } from "react"
+import styled, { useTheme } from "styled-components"
+import { authContext } from "../../context/authContext"
+import { useNavigate } from "react-router-dom"
+import { Oval } from "react-loader-spinner"
 
-export default function FormLogin(){
+export default function FormLogin() {
     const [login, setLogin] = useState<string>('')
     const [password, setPassword] = useState<string>('')
+    const { signIn, signed, isLoading, isLoginError } = useContext(authContext)
+    const navigate = useNavigate()
 
-    function submitLogin(e: FormEvent<HTMLFormElement>){
+    const theme = useTheme()
+
+    function submitLogin(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
+        const data = {
+            email: login,
+            password
+        }
+        signIn?.(data)
     }
 
-    return(
+    useEffect(() => {
+        if (signed) {
+            navigate('/home')
+        }
+        if(isLoginError){
+            setPassword('')
+            setLogin('')
+        }
+    }, [signed, isLoading])
+
+
+
+    return (
         <ContainerFormLogin onSubmit={submitLogin}>
             <ContainerInput>
                 <label htmlFor="login">login</label>
-                <input type="text" placeholder="login" id="login" value={login} onChange={(e) => setLogin(e.target.value)}/>
+                <input type="text" placeholder="login" id="login" value={login} onChange={(e) => setLogin(e.target.value)} />
             </ContainerInput>
             <ContainerInput>
                 <label htmlFor="password">password</label>
-                <input type="password" placeholder="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <input type="password" placeholder="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </ContainerInput>
-            <Button type="submit">Entrar</Button>
+            <Button type="submit" disabled={isLoading}>{isLoading ? <Oval color={theme.colors['yellow1']} strokeWidth={3} width={24} height={24} secondaryColor={theme.colors['gray1']} /> : "continuar"}</Button>
         </ContainerFormLogin>
     )
 }
@@ -78,7 +102,15 @@ const Button = styled.button`
     height: 54px;
     cursor: pointer;
     transition: 200ms;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &:hover {
         background-color: ${props => props.theme.colors['yellow1']};
+    }
+    &:disabled {
+        &:hover {
+        background-color: ${props => props.theme.colors['black']};
+    }
     }
 `

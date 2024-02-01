@@ -9,7 +9,7 @@ export default function Player() {
     const ytRef = useRef<YouTube | null>(null)
     const { next, prev, listVideos, activeVideo, setActiveVideoData, activeVideoData, action, defineActionPlayer } = useContext(PlayerContext)
     const [volume, setVolume] = useState<number>(100)
-    const [autoplay, setAutoPlay] = useState<0 | 1 | undefined >(0)
+    const [autoplay, setAutoPlay] = useState<0 | 1 | undefined>(0)
 
     useEffect(() => {
         if (ytRef.current) {
@@ -36,7 +36,7 @@ export default function Player() {
     }
 
     async function onReady(e: YouTubeEvent<any>) {
-        if(autoplay === 0){
+        if (autoplay === 0) {
             setActiveVideoData({
                 videoId: listVideos[activeVideo].videoId,
                 status: EVideoStatus.PAUSED
@@ -81,48 +81,52 @@ export default function Player() {
     }
 
     return (
-        <ContainerPlayer>
-            <ContainerVideo>
-                {
-                    listVideos.length && <YouTube
-                        videoId={listVideos[activeVideo].videoId}
-                        iframeClassName="iframe"
-                        ref={ytRef}
-                        onPause={() => setActiveVideoData(v => {
-                            return {
-                                videoId: v?.videoId as string,
-                                status: EVideoStatus.PAUSED
-                            }
-                        })}
-                        onPlay={() => () => setActiveVideoData(v => {
-                            return {
-                                videoId: v?.videoId as string,
-                                status: EVideoStatus.PLAYED
-                            }
-                        })}
-                        onReady={onReady}
-                        onEnd={onEnd}
-                        opts={{
-                            playerVars: {
-                                // https://developers.google.com/youtube/player_parameters
-                                autoplay: autoplay
-                              },
-                        }}
-                    />
-                }
-            </ContainerVideo>
-            <ContainerControls>
-                <TbPlayerTrackPrevFilled onClick={prev} color="#ffffff" />
-                <div>
-                    {!activeVideoData || activeVideoData?.status === EVideoStatus.PAUSED ? <TbPlayerPlayFilled onClick={onClickPlay} color="#ffffff" /> : <TbPlayerPauseFilled onClick={onClickPause} color="#ffffff" />}
-                </div>
-                <TbPlayerTrackNextFilled onClick={next} color="#ffffff" />
-            </ContainerControls>
-            <ContainerVolume>
-                <TbVolume2 color="F5B301" size={24} />
-                <input type="range" min={0} max={100} step={1} value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
-            </ContainerVolume>
-        </ContainerPlayer>
+        <>
+            {activeVideoData && 
+            <ContainerPlayer>
+                <ContainerVideo>
+                    {
+                        listVideos.length && <YouTube
+                            videoId={listVideos[activeVideo].videoId}
+                            iframeClassName="iframe"
+                            ref={ytRef}
+                            onPause={() => setActiveVideoData(v => {
+                                return {
+                                    videoId: v?.videoId as string,
+                                    status: EVideoStatus.PAUSED
+                                }
+                            })}
+                            onPlay={() => () => setActiveVideoData(v => {
+                                return {
+                                    videoId: v?.videoId as string,
+                                    status: EVideoStatus.PLAYED
+                                }
+                            })}
+                            onReady={onReady}
+                            onEnd={onEnd}
+                            opts={{
+                                playerVars: {
+                                    // https://developers.google.com/youtube/player_parameters
+                                    autoplay: autoplay
+                                },
+                            }}
+                        />
+                    }
+                </ContainerVideo>
+                <ContainerControls>
+                    <TbPlayerTrackPrevFilled onClick={prev} color="#ffffff" />
+                    <div>
+                        {!activeVideoData || activeVideoData?.status === EVideoStatus.PAUSED ? <TbPlayerPlayFilled onClick={onClickPlay} color="#ffffff" /> : <TbPlayerPauseFilled onClick={onClickPause} color="#ffffff" />}
+                    </div>
+                    <TbPlayerTrackNextFilled onClick={next} color="#ffffff" />
+                </ContainerControls>
+                <ContainerVolume>
+                    <TbVolume2 color="F5B301" size={24} />
+                    <input type="range" min={0} max={100} step={1} value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
+                </ContainerVolume>
+            </ContainerPlayer>
+            }
+        </>
     )
 }
 

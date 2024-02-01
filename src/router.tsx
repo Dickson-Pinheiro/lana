@@ -4,16 +4,19 @@ import Login from "./pages/Login";
 import Music from "./pages/Music";
 import PlayerLayout from "./layouts/PlayerLayout";
 import Playlist from "./pages/Playlist";
+import PrivateRoute from "./layouts/PrivateRoute";
 
 export default function Router(){
     return(
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Login />}/>
-                <Route path="/" element={<PlayerLayout />}>
-                    <Route path="/home" element={<Home />}/>
-                    <Route path="/playlist" element={<Playlist />} />
-                    <Route path="/music" element={<Music />}/>
+                <Route element={<PrivateRoute />}>
+                    <Route element={<PlayerLayout />}>
+                        <Route path="/home" element={<Home />}/>
+                        <Route path="/playlist" element={<Playlist />} />
+                        <Route path="/music" element={<Music />}/>
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>
