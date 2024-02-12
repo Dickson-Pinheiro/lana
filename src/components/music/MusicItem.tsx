@@ -2,17 +2,21 @@ import styled from "styled-components"
 import { useContext } from "react";
 import { EPlayerActionsType, PlayerContext } from "../../context/PlayerContext";
 import PlayerIcon from "./PlayerIcon";
+import { Music } from "../../types/music";
 
 interface MusicItemProps {
     name: string,
     artist: string,
-    videoId: string
+    videoId: string,
+    id: number,
+    musics: Music[]
 }
 
-export default function MusicItem({ name, artist, videoId }: MusicItemProps){
-    const { playPerId, activeVideo, listVideos, defineActionPlayer, activeVideoData } = useContext(PlayerContext)
+export default function MusicItem({ name, artist, videoId, id, musics}: MusicItemProps){
+    const { playPerId, activeVideo, listVideos, defineActionPlayer, activeVideoData, setListVideos } = useContext(PlayerContext)
 
     function onClickMusicItem(){
+        setListVideos(musics)
         playPerId(videoId)
         if(activeVideoData?.videoId === videoId){
             return
@@ -22,8 +26,8 @@ export default function MusicItem({ name, artist, videoId }: MusicItemProps){
     }
 
     return(
-        <ContainerMusicItem active={listVideos[activeVideo]?.videoId === videoId } onClick={onClickMusicItem}>
-            <PlayerIcon videoId={videoId}/>
+        <ContainerMusicItem active={listVideos?.[activeVideo]?.id === id } onClick={() => onClickMusicItem()}>
+            <PlayerIcon id={id} musics={musics}/>
             <InfoContainer>
                 <p>{name}</p>
                 <span>{artist}</span>

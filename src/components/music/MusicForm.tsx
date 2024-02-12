@@ -1,38 +1,54 @@
-import { FormEvent, useState } from "react"
+import { FormEvent, useState } from "react";
 import styled from "styled-components"
-import { useCreatePlaylist } from "../../hooks/useCreatePlaylist"
+import { CreateMusic } from "../../types/music";
+import { useCreateMusic } from "../../hooks/useCreateMusic";
 
-interface PlaylistFormProps {
-    closeModal: () => void
+interface MusicPropsForm {
+    closeModal: () => void;
+    id: number;
 }
 
-export default function PlaylistForm({ closeModal }: PlaylistFormProps) {
-    const [name, setName] = useState<string>('')
-    const { mutate } = useCreatePlaylist()
+export default function MusicForm({ id, closeModal }: MusicPropsForm) {
+    const [title, setTitle] = useState<string>("")
+    const [videoId, setVideoId] = useState<string>("")
+    const [artist, setArtist] = useState<string>("")
+    const { mutate } = useCreateMusic()
 
     function submitForm(e: FormEvent){
-        if(!name) return
         e.preventDefault()
-        const data = {
-            name
+        const data: CreateMusic = {
+            artist,
+            title,
+            videoId,
+            playlistId: id
         }
         mutate(data)
-        setName('')
+        setArtist('')
+        setTitle('')
+        setVideoId('')
         closeModal()
     }
 
     return (
-        <ContainerPlaylistForm onSubmit={submitForm}>
+        <ContainerMusicForm onSubmit={submitForm}>
             <ContainerInput>
-                <label htmlFor="name">name</label>
-                <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required={true}/>
+                <label>Title</label>
+                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            </ContainerInput>
+            <ContainerInput>
+                <label>video id</label>
+                <input type="text" value={videoId} onChange={(e) => setVideoId(e.target.value)} required />
+            </ContainerInput>
+            <ContainerInput>
+                <label>artist</label>
+                <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} required />
             </ContainerInput>
             <Button type="submit">Send</Button>
-        </ContainerPlaylistForm>
+        </ContainerMusicForm>
     )
 }
 
-const ContainerPlaylistForm = styled.form`
+const ContainerMusicForm = styled.form`
     padding: 10px;
     display: flex;
     flex-direction: column;

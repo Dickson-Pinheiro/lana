@@ -22,11 +22,10 @@ export const authContext = createContext<PropsAuthContext>({})
 
 export function AuthContextProvider({ children }: PropsAuthContextProvider){
     const [user, setUser] = useState<LoginResponse>()
-    const [signed,setSigned] = useState<boolean>(true)
+    const [signed,setSigned] = useState<boolean>(false)
     const { mutate, error, isError, data, isSuccess, isLoading } = useLogin()
 
     function signIn(data: ISignInUser){
-        console.log("chamou")
         mutate(data)
     }
     

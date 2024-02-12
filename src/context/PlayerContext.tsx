@@ -10,6 +10,7 @@ export enum EVideoStatus {
 interface ActiveVideoData {
     videoId: string;
     status: EVideoStatus;
+    id: number;
 }
 
 export enum EPlayerActionsType {
@@ -56,8 +57,9 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
     const next = () => {
         if (listVideos[activeVideo + 1]) {
             setActiveVideo(a => a + 1)
-            let id = listVideos[activeVideo + 1].videoId
-            setActiveVideoData({videoId: id, status: EVideoStatus.LOADING})
+            let videoId = listVideos[activeVideo + 1].videoId
+            let id = listVideos[activeVideo + 1].id
+            setActiveVideoData({videoId: videoId, status: EVideoStatus.LOADING, id: id})
         }
     }
 
@@ -68,16 +70,19 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
     const prev = () => {
         if (activeVideo > 0) {
             setActiveVideo(a => a - 1)
-            let id = listVideos[activeVideo - 1].videoId
-            setActiveVideoData({videoId: id, status: EVideoStatus.LOADING})
+            let videoId = listVideos[activeVideo - 1].videoId
+            let id = listVideos[activeVideo - 1].id
+            setActiveVideoData({id: id, videoId: videoId, status: EVideoStatus.LOADING})
         }
     }
 
     function playPerId(videoId: string){
         const position = listVideos.findIndex(e => e.videoId === videoId)
+        console.log(position)
+        const video = listVideos.find(e => e.videoId === videoId)
         setActiveVideo(position);
         if(videoId !== activeVideoData?.videoId){
-            setActiveVideoData({videoId, status: EVideoStatus.LOADING})
+            setActiveVideoData({id: video?.id as number,videoId, status: EVideoStatus.LOADING})
         }
     }
 

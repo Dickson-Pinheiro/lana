@@ -39,12 +39,14 @@ export default function Player() {
         if (autoplay === 0) {
             setActiveVideoData({
                 videoId: listVideos[activeVideo].videoId,
-                status: EVideoStatus.PAUSED
+                status: EVideoStatus.PAUSED,
+                id: listVideos[activeVideo].id,
             })
         } else {
             setActiveVideoData({
                 videoId: listVideos[activeVideo].videoId,
-                status: EVideoStatus.PLAYED
+                status: EVideoStatus.PLAYED,
+                id: listVideos[activeVideo].id,
             })
         }
         setAutoPlay(1)
@@ -56,7 +58,8 @@ export default function Player() {
         setActiveVideoData(v => {
             return {
                 videoId: v?.videoId as string,
-                status: EVideoStatus.PLAYED
+                status: EVideoStatus.PLAYED,
+                id: listVideos[activeVideo].id,
             }
         })
     }
@@ -66,7 +69,8 @@ export default function Player() {
         setActiveVideoData(v => {
             return {
                 videoId: v?.videoId as string,
-                status: EVideoStatus.PAUSED
+                status: EVideoStatus.PAUSED,
+                id: listVideos[activeVideo].id,
             }
         })
     }
@@ -76,30 +80,33 @@ export default function Player() {
         defineActionPlayer(EPlayerActionsType.PLAY)
         setActiveVideoData({
             videoId: listVideos[activeVideo].videoId,
-            status: EVideoStatus.PLAYED
+            status: EVideoStatus.PLAYED,
+            id: listVideos[activeVideo].id,
         })
     }
 
     return (
         <>
-            {activeVideoData && 
+            {(activeVideoData && listVideos.length !== 0) && 
             <ContainerPlayer>
                 <ContainerVideo>
                     {
-                        listVideos.length && <YouTube
-                            videoId={listVideos[activeVideo].videoId}
+                        listVideos?.length && <YouTube
+                            videoId={listVideos?.[activeVideo]?.videoId}
                             iframeClassName="iframe"
                             ref={ytRef}
                             onPause={() => setActiveVideoData(v => {
                                 return {
                                     videoId: v?.videoId as string,
-                                    status: EVideoStatus.PAUSED
+                                    status: EVideoStatus.PAUSED,
+                                    id: v?.id as number
                                 }
                             })}
                             onPlay={() => () => setActiveVideoData(v => {
                                 return {
                                     videoId: v?.videoId as string,
-                                    status: EVideoStatus.PLAYED
+                                    status: EVideoStatus.PLAYED,
+                                    id:v?.id as number
                                 }
                             })}
                             onReady={onReady}

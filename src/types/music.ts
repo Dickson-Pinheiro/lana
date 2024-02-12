@@ -4,3 +4,10 @@ export interface Music {
     artist: string;
     videoId: string;
 }
+
+export interface CreateMusic {
+    title: string;
+    videoId: string;
+    artist: string;
+    playlistId: number
+}

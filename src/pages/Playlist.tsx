@@ -2,16 +2,25 @@ import styled from "styled-components"
 import Header from "../components/Header"
 import plusImg from '../assets/plus.svg'
 import MusicItem from "../components/music/MusicItem"
-import { useMusics } from "../mock/useMusics"
-import { useContext, useEffect } from "react"
-import { PlayerContext } from "../context/PlayerContext"
+import { useState } from "react"
+import { useParams } from "react-router-dom"
+import { useGetMusics } from '../hooks/useGetMusics'
+import Modal from "../components/Modal"
+import MusicForm from "../components/music/MusicForm"
+import { Music } from "../types/music"
 
 export default function Playlist(){
-    const musics = useMusics()
-    const { setListVideos, activeVideo  } = useContext(PlayerContext)
-    useEffect(() => {
-        setListVideos(musics)
-    }, [activeVideo])
+    const {id} = useParams()
+    const [open, setOpen] = useState<boolean>(false)
+    const { data } = useGetMusics(Number(id))
+
+    function closeModal(){
+        setOpen(false)
+    }
+
+    function openModal(){
+        setOpen(true)
+    }
 
     return(
         <ContainerPlaylist>
@@ -19,12 +28,13 @@ export default function Playlist(){
             <ContainerContent>
                 <ContainerTitle>
                     <h1>Músicas</h1>
-                    <img src={plusImg} />
+                    <img src={plusImg} onClick={openModal}/>
                 </ContainerTitle>
                 <ContainerMusics>
-                    {musics.map(m => <MusicItem name={m.name} artist={m.artist} key={m.id} videoId={m.videoId}/>)}
+                    {data?.data.map((m: any) => <MusicItem name={m.title} artist={m.artist} key={m.id} videoId={m.videoId} id={m.id} musics={data?.data as Music[]}/>)}
                 </ContainerMusics>
             </ContainerContent>
+            <Modal open={open} closeModal={closeModal}><MusicForm closeModal={closeModal} id={Number(id)}></MusicForm> </Modal>
         </ContainerPlaylist>
     )
 }

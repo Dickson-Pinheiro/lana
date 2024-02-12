@@ -14,7 +14,7 @@ export default function Router(){
                 <Route element={<PrivateRoute />}>
                     <Route element={<PlayerLayout />}>
                         <Route path="/home" element={<Home />}/>
-                        <Route path="/playlist" element={<Playlist />} />
+                        <Route path="/playlist/:id" element={<Playlist />} />
                         <Route path="/music" element={<Music />}/>
                     </Route>
                 </Route>
